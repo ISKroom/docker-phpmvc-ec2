@@ -1,0 +1,44 @@
+# コンテナ起動して直ぐは接続が拒否されることがあるので少し待つ
+
+version: '3'
+services:
+
+  php:
+    stdin_open: true
+    build: ./php
+    depends_on:
+      - mysql
+    ports:
+      - 80:80
+    volumes:
+      - ./php:/var/www/html
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=password
+      - DB_NAME=sample_db
+
+  mysql:
+    build:
+      dockerfile: Dockerfile
+      context: ./mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=sample_db
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=password
+
+  phpmyadmin:
+    build:
+      dockerfile: Dockerfile
+      context: ./phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=password
+    links:
+      - mysql
+    ports:
+       - 8080:80

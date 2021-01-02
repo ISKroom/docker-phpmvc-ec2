@@ -1,0 +1,11 @@
+
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+# http://○○○.com/hoge.html (or http://localhost/hoge.html) でアクセスしたときに、URLを「http://○○○.com/public/hoge.html (or http://localhost/public/hoge.html)」に内部書き換え
+
+  RewriteRule ^$ public/ [L]
+  RewriteRule (.*) public/$1 [L]
+
+
+</IfModule>
