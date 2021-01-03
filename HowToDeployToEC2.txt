@@ -14,7 +14,8 @@
 ・作成したEC2インスタンスをクリック
 ・インバウンドルールを編集をクリック
 　→　ルールを追加をクリック
-　→　タイプ：HTTP、ソース：0.0.0.0/0
+　→　タイプ：HTTP、ソース：0.0.0.0/0　（☆httpアクセスじゃないと接続がタイムアウトするので注意）
+  →　タイプ：カスタムTCP、ポート範囲：8080、ソース：0.0.0.0/0　（☆httpアクセスじゃないと接続がタイムアウトするので注意）
 　→　ルールを保存
 
 2. EC2インスタンスにssh接続
@@ -37,6 +38,13 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docke
 $ sudo chmod +x /usr/local/bin/docker-compose
 $ docker-compose --version            # 正常にバージョンが表示されたら完了
 
+※docker-composeがdenyされたら
+$ cd /
+$ sudo nano /etc/sudoers
+  Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+  ↓
+  Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/local/bin:/usr/bin
+
 4. EC2インスタンスにソースコード転送
 ・Tera Term の ファイル → SSH SCP をクリック
 　→　ポップアップしたウィンドウの上段フォームにて、Fromの「...」をクリックしてデプロイしたいソースコードのzipファイルを選択
@@ -44,4 +52,6 @@ $ docker-compose --version            # 正常にバージョンが表示され�
 　→ Sendをクリック
 ・Tera Term → ls でちゃんと転送できたか確認
 ・unzip <filename.zip> で解答
-・cd filename → docker-compose up --build でコンテナ起動
+・cd filename → sudo docker-compose up --build でコンテナ起動
+
+☆httpアクセスじゃないと接続がタイムアウトするので注意
